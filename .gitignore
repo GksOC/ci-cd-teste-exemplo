@@ -137,3 +137,10 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# arquivos allure
+allure-report/
+allure-results/
+
+# mídia cypress
+videos/
