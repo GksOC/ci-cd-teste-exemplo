@@ -6,24 +6,24 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Use Node.js 
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
         cache: 'npm'
-
-    - name: Use Node.js
-      run: npm install
+        
+    - name: Instalar dependencias
+      run: npm ci
 
     - name: Executar testes
       run: npm run cy:run
 
-    - name: Fazer backup
+    - name: Fazer backup do histórico (Bash)
       run: npm run report:backup-history-bash
 
     - name: Gerar relatório Allure
@@ -33,4 +33,4 @@ jobs:
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./public
+        publish_dir: ./allure-report # Atenção aqui: O Allure gera a pasta "allure-report", não "public"
