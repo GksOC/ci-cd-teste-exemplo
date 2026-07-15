@@ -6,6 +6,7 @@
   "scripts": {
     "cy:run": "npx cypress run --browser firefox",
     "report:backup-history": "powershell -ExecutionPolicy Bypass -Command \"if (Test-Path allure-report\\history) { Copy-Item -Path allure-report\\history -Destination allure-results\\history -Recurse -Force }\"",
+    "report:backup-history-bash": "mkdir -p allure-results/history && [ -d allure-report/history ] && cp -r allure-report/history/* allure-results/history/ || true",
     "report:gen": "npx allure generate --clean allure-results -o allure-report",
     "report:open": "npx allure serve allure-results",
     "fluxo-completo": "powershell -ExecutionPolicy Bypass -Command \"npm run cy:run; npm run report:backup-history; npm run report:gen; npm run report:open\""

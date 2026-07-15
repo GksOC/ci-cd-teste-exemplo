@@ -16,7 +16,7 @@ jobs:
       with:
         node-version: 18
         cache: 'npm'
-        
+
     - name: Use Node.js
       run: npm install
 
@@ -24,7 +24,7 @@ jobs:
       run: npm run cy:run
 
     - name: Fazer backup
-      run: npm run report:backup-history
+      run: npm run report:backup-history-bash
 
     - name: Gerar relatório Allure
       run: npm run report:gen
