@@ -4,7 +4,11 @@
   "description": "Projeto simples para aulas de CI-CD",
   "main": "index.js",
   "scripts": {
-    "test": "npx cypress run --browser firefox"
+    "cy:run": "npx cypress run --browser firefox",
+    "report:backup-history": "powershell -ExecutionPolicy Bypass -Command \"if (Test-Path allure-report\\history) { Copy-Item -Path allure-report\\history -Destination allure-results\\history -Recurse -Force }\"",
+    "report:gen": "npx allure generate allure-results --clean -o allure-report",
+    "report:open": "npx allure serve allure-results",
+    "fluxo-completo": "powershell -ExecutionPolicy Bypass -Command \"npm run cy:run; npm run report:backup-history; npm run report:gen; npm run report:open\""
   },
   "repository": {
     "type": "git",
@@ -20,5 +24,8 @@
   "homepage": "https://github.com/EBAC-QE/ci-cd-teste-exemplo#readme",
   "dependencies": {
     "cypress": "^14.5.4"
+  },
+  "devDependencies": {
+    "allure-cypress": "^3.10.2"
   }
 }
