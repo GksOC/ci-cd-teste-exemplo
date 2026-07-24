@@ -50,10 +50,11 @@ pipeline {
             }
         }
 
-        post {
-            always {
-                bat "taskkill /F /IM node.exe || exit 0"
-            }
+    }
+
+    post {
+        always {
+            bat "taskkill /F /IM node.exe || exit 0"
         }
     }
 
