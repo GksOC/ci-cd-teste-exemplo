@@ -1,6 +1,6 @@
 pipeline {
 
-    agente any
+    agent any
 
     stages {
         stage('Instalação das dependencias') {
