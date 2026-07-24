@@ -1,0 +1,60 @@
+pipeline {
+
+    agent any
+
+    tools { nodejs "nodejs26" }
+
+    stages {
+        stage("Clonar o hub de leitura integrado") {
+            steps {
+                bat '''
+                    if exist hub-de-leitura-integrado rmdir /s /q hub-de-leitura-integrado
+                    git clone https://github.com/EBAC-QE/hub-de-leitura-integrado
+                '''
+            }
+        }
+
+        stage("Instalar dependencias do projeto") {
+            steps {
+                dir("hub-de-leitura-integrado") {
+                    bat '''
+                        call npm install
+                        start /B npm start
+                    '''
+                }
+            }
+        }
+
+        stage("Clonar o projeto de teste") {
+            steps {
+                bat '''
+                    if exist ci-cd-teste-exemplo rmdir /s /q ci-cd-teste-exemplo
+                    git clone https://github.com/GksOC/ci-cd-teste-exemplo
+                '''
+            }
+        }
+
+        stage("Instalar dependencias do projeto de teste") {
+            steps {
+                dir('ci-cd-teste-exemplo') {
+                    bat "call npm install"
+                }
+            }
+        }
+
+        stage("Executar os testes automatizados") {
+            steps {
+                dir('ci-cd-teste-exemplo') {
+                    bat "call npm run cy:run"
+                }
+            }
+        }
+
+        post {
+            always {
+                bat "taskkill /F /IM node.exe || exit 0"
+            }
+        }
+    }
+
+}

@@ -143,4 +143,5 @@ allure-report/
 allure-results/
 
 # mídia cypress
-videos/
+cypress/videos/
+cypress/screenshots
