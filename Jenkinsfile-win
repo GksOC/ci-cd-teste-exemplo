@@ -44,7 +44,7 @@ pipeline {
 			echo 'Arquivando artefatos - caso houver erros'
 			dir('ci-cd-teste-exemplo'){
 				archiveArtifacts artifacts: 'cypress/screenshots/**/*.*,cypress/videos/**/*.*', allowEmptyArchive: true
-				allure includeProperties: false, jdk: '', results: [[path: 'allure-report']]
+				allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
 			}
             
             bat "taskkill /F /IM node.exe || exit 0"
