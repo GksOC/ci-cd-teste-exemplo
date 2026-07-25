@@ -1,61 +1,53 @@
 pipeline {
-
     agent any
 
     tools { nodejs "nodejs26" }
 
     stages {
-        stage("Clonar o hub de leitura integrado") {
+        stage("Clonar e iniciar o hub de leitura") {
             steps {
                 bat '''
                     if exist hub-de-leitura-integrado rmdir /s /q hub-de-leitura-integrado
                     git clone https://github.com/EBAC-QE/hub-de-leitura-integrado
                 '''
-            }
-        }
-
-        stage("Instalar dependencias do projeto") {
-            steps {
                 dir("hub-de-leitura-integrado") {
                     bat '''
                         call npm install
-                        start /B npm start
+                        start /B npm start > nul 2>&1
                     '''
                 }
             }
         }
 
-        stage("Clonar o projeto de teste") {
+        stage("Instalar dependencias do teste") {
             steps {
-                bat '''
-                    if exist ci-cd-teste-exemplo rmdir /s /q ci-cd-teste-exemplo
-                    git clone https://github.com/GksOC/ci-cd-teste-exemplo
-                '''
-            }
-        }
-
-        stage("Instalar dependencias do projeto de teste") {
-            steps {
-                dir('ci-cd-teste-exemplo') {
-                    bat "call npm install"
-                }
+                // Executa direto na raiz do projeto já clonado pelo Jenkins SCM
+                bat "call npm install"
             }
         }
 
         stage("Executar os testes automatizados") {
             steps {
-                dir('ci-cd-teste-exemplo') {
-                    bat "call npm run cy:run"
-                }
+                bat "call npm run cy:run"
             }
         }
-
     }
 
     post {
-        always {
+        success{
+			echo 'Build finalizada com sucesso!'
+		}
+		failure{
+			echo 'Houve um erro durante a build'
+		}
+		always {
             bat "taskkill /F /IM node.exe || exit 0"
-        }
+			echo 'Arquivando artefatos - caso houver erros'
+			dir('ci-cd-teste-exemplo'){
+				archiveArtifacts artifacts: 'cypress/screenshots/**/*.*,cypress/videos/**/*.*', allowEmptyArchive: true
+				allure includeProperties: false, jdk: '', results: [[path: 'allure-report']]
+			}
+		}
     }
-
+    
 }
